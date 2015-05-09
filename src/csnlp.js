@@ -25,41 +25,64 @@
     return "\t\n\r\v ".indexOf(ch) != -1;
   };
 
+  //CSNLP version
   csnlp.VERSION = '0.0.1';
 
   //Tokenization by whitespace
   csnlp.tokenizeWS = function (text) {
     var tokens = [],
-        token = "";
+        token = { word: "", begin: 0, end: 0 };
 
-    for(var i = 0; i < text.length; ++i){
+    for(var i = 0; i < text.length; ++i) {
       var item = text[i];
-      if(isWS(item)){
+      if(isWS(item)) {
+        token.end = i - 1;
         tokens.push(token);
-        token = "";
+        token = { word: "", begin: 0, end: 0 };
       }
       else {
-        token += item;
+        if(token.begin == 0 && token.word.length == 0) {
+          token.begin = i;
+        }
+        token.word += item;
       }
     }
+
+    if(token.word.length != 0)
+    {
+      token.end = text.length - 1;
+      tokens.push(token);
+    }
+
     return tokens;
   };
 
-  csnlp.tokenizeEN = function (text) {
+  //Standard Treebank tokenizer
+  csnlp.tokenizeTB = function (text) {
     var tokens = [],
-        token = "";
-    for(var i = 0; i < text.length; ++i){
-      var item = text[i];
-      if(isWs(item)){
-        tokens.push(token);
-        token = "";
-      }
-      //todo: add conditions
-      else {
+        token = { word: "", begin: 0, end: 0 };
 
-        token += item;
+    for(var i = 0; i < text.length; ++i) {
+      var item = text[i];
+      if(isWS(item)) {
+        token.end = i - 1;
+        tokens.push(token);
+        token = { word: "", begin: 0, end: 0 };
+      }
+      else {
+        if(token.begin == 0 && token.word.length == 0) {
+          token.begin = i;
+        }
+        token.word += item;
       }
     }
+
+    if(token.word.length != 0)
+    {
+      token.end = text.length - 1;
+      tokens.push(token);
+    }
+
     return tokens;
   }
 
