@@ -21,7 +21,7 @@ describe('csnlp', function(){
 
     it('get three words', function() {
       var tokens = csnlp.tokenizeWS("the quick brown fox jumps over the lazy dog");
-
+      console.log(tokens);
       assert.equal(9, tokens.length);
       assert.equal("the", tokens[0].word);
       assert.equal(0, tokens[0].begin);

@@ -35,19 +35,20 @@
 
     for(var i = 0; i < text.length; ++i) {
       var item = text[i];
-      if(isWS(item)) {
+      if(isWS(item) && token.word.length > 0) {
         token.end = i - 1;
+        token.begin = token.begin > 0 ? token.begin : token.end;
         tokens.push(token);
         token = { word: "", begin: 0, end: 0 };
       }
-      else {
+      else if(!isWS(item)){
         if(token.begin == 0 && token.word.length == 0) {
           token.begin = i;
         }
         token.word += item;
       }
     }
-
+    //push if there token is end
     if(token.word.length != 0)
     {
       token.end = text.length - 1;
@@ -58,30 +59,34 @@
   };
 
   //Standard Treebank tokenizer
+  //Ported from NLTK's treebank tokenizer
   csnlp.tokenizeTB = function (text) {
-    var tokens = [],
-        token = { word: "", begin: 0, end: 0 };
+    var tokens = [];
 
-    for(var i = 0; i < text.length; ++i) {
-      var item = text[i];
-      if(isWS(item)) {
-        token.end = i - 1;
-        tokens.push(token);
-        token = { word: "", begin: 0, end: 0 };
-      }
-      else {
-        if(token.begin == 0 && token.word.length == 0) {
-          token.begin = i;
-        }
-        token.word += item;
-      }
-    }
+    //starting quotes
+    text = text.replace(/^"/gm, " `` ");
+    text = text.replace(/(``)/gm, " `` ");
+    text = text.replace(/([ (\[{<])"/gm, function(item){return item[0]+' `` ';});
 
-    if(token.word.length != 0)
-    {
-      token.end = text.length - 1;
-      tokens.push(token);
-    }
+    //punctuations
+    text = text.replace(/([:,])([^\d])/gm, function(item){return item[0]+' '+item[1];});
+    text = text.replace(/\.\.\./gm, function(item){return ' ... ';})
+    text = text.replace(/[;@#$%&]/gm, function(item){return ' '+item+' ';})
+    text = text.replace(/([^\.])(\.)([\]\)}>"\']*)\s*$/gm, function(item){return item[0] + " " + item[1] + item[2];})
+    text = text.replace(/[?!]/gm, function(item){return ' '+item+' '});
+    text = text.replace(/([^'])' /gm, function(item){return item[0]+' '+item[1];});
+
+    //parens, brackets, etc.
+    text = text.replace(/[\]\[\(\)\{\}\>\<]/, function(item){return ' '+item+' '});
+    text = text.replace(/--/, " -- ");
+
+    //ending quotes
+    text = text.replace(/"/, " '' ");
+    text = text.replace(/(\S)(\'\')/, function(item){ return item[0] + " ''"; });
+
+    //text = text.replace()
+
+    tokens = this.tokenizeWS(text);
 
     return tokens;
   }

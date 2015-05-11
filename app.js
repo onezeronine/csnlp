@@ -1,8 +1,8 @@
-///For debugging purposes only
-var csnlp = require('./src/csnlp')
+var csnlp = require('./src/csnlp');
+var text = "and he says\r" +
+  "\"what are you doing here, boy?\" \"I'm here to cook a meal.\"\r" +
+  "12,45&36\r" +
+  "12...\r" +
+  "'' abc def>sadas";
 
-var text =
-  "the quick brown fox jumps over the lazy dog";
-var tokens = csnlp.tokenizeWS(text);
-
-console.log(tokens);
+console.log(csnlp.tokenizeWS(text));
