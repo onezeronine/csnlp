@@ -21,48 +21,64 @@
   }
 
   //helper function to check if the character has a whitespace
-  var isWS = function(ch){
+  var isWhitespace = function(ch){
     return "\t\n\r\v ".indexOf(ch) != -1;
   };
 
   //CSNLP version
-  csnlp.VERSION = '0.0.1';
+  csnlp.VERSION = '0.0.1 DEV';
 
   //Tokenization by whitespace
   csnlp.tokenizeWS = function (text) {
     var tokens = [],
-        token = { word: "", begin: 0, end: 0 };
+        current = 0,
+        getBegin = function(){
+          var i = current;
+          while(isWhitespace(text[i]) && i < text.length) ++i;
+          return i;
+        },
+        getEnd = function(begin){
+          var i = begin;
+          while(!isWhitespace(text[i]) && i < text.length) ++i;
+          return i - 1;
+        };
 
-    for(var i = 0; i < text.length; ++i) {
-      var item = text[i];
-      if(isWS(item) && token.word.length > 0) {
-        token.end = i - 1;
-        token.begin = token.begin > 0 ? token.begin : token.end;
-        tokens.push(token);
-        token = { word: "", begin: 0, end: 0 };
-      }
-      else if(!isWS(item)){
-        if(token.begin == 0 && token.word.length == 0) {
-          token.begin = i;
-        }
-        token.word += item;
+    if(text && text.length > 0) {
+      while(current < text.length) {
+        var begin = getBegin(),
+            end = getEnd(begin),
+            word = text.substr(begin, end - begin + 1);
+
+        if(word)
+          tokens.push(word);
+
+        current = end + 1;
       }
     }
-    //push if there token is end
-    if(token.word.length != 0)
-    {
-      token.end = text.length - 1;
-      tokens.push(token);
-    }
-
     return tokens;
-  };
+  }
 
   //Standard Treebank tokenizer
+  //http://www.cis.upenn.edu/~treebank/tokenization.html
   //Ported from NLTK's treebank tokenizer
   csnlp.tokenizeTB = function (text) {
-    var tokens = [];
+    var contractions2 = [
+        /\b(can)(not)\b/gmi,
+        /\b(d)('ye)\b/gmi,
+        /\b(gim)(me)\b/gmi,
+        /\b(gon)(na)\b/gmi,
+        /\b(got)(ta)\b/gmi,
+        /\b(lem)(me)\b/gmi,
+        /\b(mor)('n)\b/gmi,
+        /\b(wan)(na) /gmi
+      ],
+      contractions3 = [
+        / ('t)(is)\b/,
+        / ('t)(was)\b/
+      ];
 
+    if(!text) return [];
+     
     //starting quotes
     text = text.replace(/^"/gm, " `` ");
     text = text.replace(/(``)/gm, " `` ");
@@ -72,23 +88,34 @@
     text = text.replace(/([:,])([^\d])/gm, function(item){return item[0]+' '+item[1];});
     text = text.replace(/\.\.\./gm, function(item){return ' ... ';})
     text = text.replace(/[;@#$%&]/gm, function(item){return ' '+item+' ';})
-    text = text.replace(/([^\.])(\.)([\]\)}>"\']*)\s*$/gm, function(item){return item[0] + " " + item[1] + item[2];})
+    text = text.replace(/([^\.])(\.)([\]\)}>"\']*)\s*$/gm,
+      function(item){return item[0] + " " + item[1] + item[2];})
     text = text.replace(/[?!]/gm, function(item){return ' '+item+' '});
     text = text.replace(/([^'])' /gm, function(item){return item[0]+' '+item[1];});
 
     //parens, brackets, etc.
-    text = text.replace(/[\]\[\(\)\{\}\>\<]/, function(item){return ' '+item+' '});
-    text = text.replace(/--/, " -- ");
+    text = text.replace(/[\]\[\(\)\{\}\>\<]/gm, function(item){return ' '+item+' '});
+    text = text.replace(/--/gm, " -- ");
+
+    text = ' ' + text + ' ';
 
     //ending quotes
-    text = text.replace(/"/, " '' ");
-    text = text.replace(/(\S)(\'\')/, function(item){ return item[0] + " ''"; });
+    text = text.replace(/"/gm, " '' ");
+    text = text.replace(/(\S)(\'\')/gm, function(item){ return item[0] + " ''"; });
 
-    //text = text.replace()
+    text = text.replace(/([^' ])('[sS]|'[mM]|'[dD]|') /gm,
+      function(item){return item[0]+' '+item.substr(1, item.length)+' ';});
+    text = text.replace(/([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) /gm,
+      function(item){ return item[0]+' '+item.substr(1,item.length)+' '; });
 
-    tokens = this.tokenizeWS(text);
+    contractions2.forEach(function(e, i, arr){
+      text = text.replace(e, function(item){return ' '+item[0]+' '+item.substr(1,item.length)+' ';});
+    });
+    contractions3.forEach(function(e, i, arr){
+      text = text.replace(e, function(item){return ' '+item[0]+' '+item[1]+' ';});
+    });
 
-    return tokens;
+    return this.tokenizeWS(text);
   }
 
 
