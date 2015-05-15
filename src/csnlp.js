@@ -78,7 +78,7 @@
       ];
 
     if(!text) return [];
-     
+
     //starting quotes
     text = text.replace(/^"/gm, " `` ");
     text = text.replace(/(``)/gm, " `` ");
@@ -118,5 +118,41 @@
     return this.tokenizeWS(text);
   }
 
+  csnlp.minEditDistance = function(first, second) {
+    if(!first || !second) {
+      return -1;
+    }
+
+    var x = first.length + 1,
+        y = second.length + 1,
+        distance = [];
+
+    //todo: minify the initialization of the distance array
+    for(var i = 0; i < x; ++i) {
+      distance.push([]);
+      for(var j = 0; j < y; ++j){
+        distance[i].push(0);
+      }
+    }
+
+    for(var i = 0; i < x; ++i) {
+      distance[i][0] = i;
+    }
+
+    for(var j = 0; j < y; ++j){
+      distance[0][j] = j;
+    }
+
+    for(var i = 1; i < x; ++i){
+      for(var j = 1; j < y; ++j){
+        var delCost = distance[i-1][j] + 1;
+        var insCost = distance[i][j-1] + 1;
+        var trpCost = distance[i-1][j-1] + (first[i-1] != second[j-1] ? 2 : 0);
+
+        distance[i][j] = Math.min(delCost, insCost, trpCost);
+      }
+    }
+    return distance[first.length - 1][second.length - 1];
+  }
 
 }.call(this));
