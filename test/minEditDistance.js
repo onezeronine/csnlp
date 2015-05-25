@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    csnlp = require('../src/csnlp');
+    csnlp = require('../csnlp');
 
 describe('csnlp', function() {
   describe('#minEditDistance()', function(){

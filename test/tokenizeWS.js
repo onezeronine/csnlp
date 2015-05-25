@@ -1,5 +1,5 @@
 var assert = require("assert"),
-  csnlp = require('../src/csnlp');
+  csnlp = require('../csnlp');
 
 
 describe('csnlp', function(){
@@ -8,7 +8,7 @@ describe('csnlp', function(){
       var tokens = csnlp.tokenizeWS(null);
       assert.equal(0, tokens.length);
     });
-    
+
     it('empty string', function(){
       var tokens = csnlp.tokenizeWS("");
       assert.equal(0, tokens.length);
