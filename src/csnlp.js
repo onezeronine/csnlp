@@ -120,7 +120,7 @@
 
   //Levenshtein Minimum Edit Distance algorithm
   //measures the difference between the two strings
-  csnlp.minEditDistance = function(first, second) {
+  var levMinEditDistance = function(first, second) {
     if(!first || !second) {
       return -1;
     }
@@ -159,7 +159,7 @@
 
   //Damerau-Levenshtein Minimum Edit Distance
   //includes transposition in its operations
-  csnlp.minEditDistance2 = function(first, second){
+  var damLevMinEditDistance = function(first, second){
     if(!first || !second){
       return -1;
     }
@@ -203,6 +203,15 @@
       }
     }
     return distance[first.length - 1][second.length - 1];
+  }
+
+  csnlp.minEditDistance = function(first, second, algorithm){
+    if(algorithm === 'damlev'){
+      return damLevMinEditDistance(first, second);
+    }
+    else{
+      return levMinEditDistance(first, second);
+    }
   }
 
   //Porter's stemmer algorithm
