@@ -118,6 +118,8 @@
     return this.tokenizeWS(text);
   }
 
+  //Levenshtein Minimum Edit Distance algorithm
+  //measures the difference between the two strings
   csnlp.minEditDistance = function(first, second) {
     if(!first || !second) {
       return -1;
@@ -153,6 +155,64 @@
       }
     }
     return distance[first.length - 1][second.length - 1];
+  }
+
+  //Damerau-Levenshtein Minimum Edit Distance
+  //includes transposition in its operations
+  csnlp.minEditDistance2 = function(first, second){
+    if(!first || !second){
+      return -1;
+    }
+    var x = first.length + 1,
+        y = second.length + 1,
+        distance = [];
+
+    //todo: minify the initialization of the distance array
+    for(var i = 0; i < x; ++i) {
+      distance.push([]);
+      for(var j = 0; j < y; ++j){
+        distance[i].push(0);
+      }
+    }
+
+    for(var i = 0; i < x; ++i) {
+      distance[i][0] = i;
+    }
+
+    for(var j = 0; j < y; ++j) {
+      distance[0][j] = j;
+    }
+    var cost = 0;
+    for(var i = 1; i < x; ++i) {
+      for(var j = 1; j < y; ++j) {
+        if(first[i] = second[j]) {
+          cost = 0;
+        }
+        else {
+          cost = 1;
+        }
+        var delCost = distance[i-1][j] + 1;
+        var insCost = distance[i][j-1] + 1;
+        var trpCost = distance[i-1][j-1] + (first[i-1] != second[j-1] ? 2 : 0);
+
+        distance[i][j] = Math.min(delCost, insCost, trpCost);
+
+        if(i > 1 && j > 1 && first[i] == second[j-1] && first[i-1] == second[j]){
+          distance[i][j] = Math.min(distance[i][j], distance[i-2][j-2] + cost);
+        }
+      }
+    }
+    return distance[first.length - 1][second.length - 1];
+  }
+
+  //Porter's stemmer algorithm
+  //returns a stem from a string
+  csnlp.stem = function(word, options){
+
+  }
+
+  csnlp.naiveBayes = function(data, options){
+
   }
 
 }.call(this));
