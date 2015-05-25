@@ -1,7 +1,7 @@
 {
   "name": "csnlp",
   "description": "The clumsy NLP JS library!",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Kenneth Bastian <bastian.kenneth.g@gmail.com>",
   "license": "MIT",
   "repository": {
