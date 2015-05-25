@@ -1,0 +1,12 @@
+{
+  "name": "csnlp",
+  "description": "The clumsy NLP JS library!",
+  "version": "0.0.1",
+  "author": "Kenneth Bastian <bastian.kenneth.g@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/onezeronine/csnlp.git"
+  },
+  "main": "csnlp.js"
+}
