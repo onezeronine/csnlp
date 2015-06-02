@@ -20,13 +20,44 @@
     root.csnlp = csnlp;
   }
 
+  //CSNLP version
+  csnlp.VERSION = '0.0.3';
+
   //helper function to check if the character has a whitespace
-  var isWhitespace = function(ch){
+  csnlp._isWhitespace = function(ch){
     return "\t\n\r\v ".indexOf(ch) != -1;
   };
 
-  //CSNLP version
-  csnlp.VERSION = '0.0.1 DEV';
+  //endsWith function
+  csnlp._endsWith = function(word, term){
+    if(typeof(word) === "string"){
+      if(term.length > word.length){
+        return false;
+      }
+      return word.substring(word.length - term.length) === term;
+    }
+    return false;
+  };
+
+  //Checks if the character is a vowel or not
+  csnlp._isVowel = function(c, i) {
+    c = c.length > 1 || i > 1 ? c[i] : c;
+    return "aeiouAEIOU".indexOf(c) >= 0;
+  };
+
+  //Checks if there is at least one vowel in the word
+  csnlp._hasVowel = function(word) {
+    if(word && word.length > 0) {
+      if(csnlp._isVowel(word[0])){
+        return true;
+      }
+      else {
+        var term = word.substring(1, word.length);
+        return csnlp._hasVowel(term);
+      }
+    }
+    return false;
+  };
 
   //Tokenization by whitespace
   csnlp.tokenizeWS = function (text) {
@@ -34,12 +65,12 @@
         current = 0,
         getBegin = function(){
           var i = current;
-          while(isWhitespace(text[i]) && i < text.length) ++i;
+          while(csnlp._isWhitespace(text[i]) && i < text.length) ++i;
           return i;
         },
         getEnd = function(begin){
           var i = begin;
-          while(!isWhitespace(text[i]) && i < text.length) ++i;
+          while(!csnlp._isWhitespace(text[i]) && i < text.length) ++i;
           return i - 1;
         };
 
@@ -209,6 +240,7 @@
       return levMinEditDistance(first, second);
     }
   }
+
 
   //Porter's stemmer algorithm
   //returns a stem from a string
