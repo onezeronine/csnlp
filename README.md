@@ -4,20 +4,32 @@ CSNLP is a javascript library that provides common NLP features such as tokeniza
 
 ### Usage
 
-For node.js
+```bash
+npm install csnlp
+```
 
-<code>var csnlp = require('csnlp')</code>
+Require using node.js
+
+```js
+var csnlp = require('csnlp')
+```
 
 ### API Docs
 
-1. <b>Whitespace Tokenizer</b> - tokenizes the string by whitespace
+* <b>Whitespace Tokenizer</b> - Takes a string and tokenizes it by whitespace. Returns an array of strings.
 
-  <code>csnlp.tokenizeWS(string)</code>
+```js
+var tokens = csnlp.tokenizeWS(string);
+```
 
-2. <b>Treebank Tokenizer</b> - tokenizes the string using the set of rules found [here](https://www.cis.upenn.edu/~treebank/tokenization.html)
+* <b>Treebank Tokenizer</b> - Takes a string and tokenizes it using the set of rules found [here](https://www.cis.upenn.edu/~treebank/tokenization.html). Returns an array of strings.
 
-  <code>csnlp.tokenizeTB(string)</code>
+```js
+var tokens = csnlp.tokenizeTB(string);
+```
 
-3. <b>Minimum Edit Distance</b> - Uses Levenshtein by default. Use <code>'damlev'</code> for the third parameter to use Damerau-Levenshtein algorithm
+* <b>Minimum Edit Distance</b> - Accepts two arrays or strings and measures teh distance betwee the two. Uses Levenshtein's algorithm by default. To override, use 'damlev' for Damerau-Levenshtein algorithm or 'lev' for Levenshtein algorithm. Returns an integer.
 
-  <code>csnlp.minEditDistance(a, b, algo)</code>
+```js
+var distance = csnlp.minEditDistance(a, b, algo);
+```

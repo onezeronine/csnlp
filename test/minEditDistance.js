@@ -1,4 +1,4 @@
-var assert = require('assert'),
+  var assert = require('assert'),
     csnlp = require('../csnlp');
 
 describe('csnlp', function() {
@@ -9,7 +9,7 @@ describe('csnlp', function() {
     });
 
     it('kitten | sitting = 5', function() {
-      var distance = csnlp.minEditDistance('kitten', 'sitting');
+      var distance = csnlp.minEditDistance('kitten', 'sitting', 'lev');
       assert.equal(5, distance);
     });
 
