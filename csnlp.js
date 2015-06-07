@@ -241,11 +241,10 @@
     }
   }
 
-
   //Porter's stemmer algorithm
   //returns a stem from a string
   csnlp.stem = function(word, options){
-
+    
   }
 
   csnlp.naiveBayes = function(data, options){
