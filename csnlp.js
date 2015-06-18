@@ -151,7 +151,10 @@
 
   //Levenshtein Minimum Edit Distance algorithm
   //measures the difference between the two strings
-  var levMinEditDistance = function(first, second) {
+  csnlp.getEditDistance1 = function(first, second) {
+    if(first.length == 0 || second.length == 0){
+      return -1;
+    }
     var x = first.length + 1,
         y = second.length + 1,
         distance = [];
@@ -186,7 +189,7 @@
 
   //Damerau-Levenshtein Minimum Edit Distance
   //includes transposition in its operations
-  var damLevMinEditDistance = function(first, second){
+  csnlp.getEditDistance2 = function(first, second){
     var x = first.length + 1,
         y = second.length + 1,
         distance = [];
@@ -229,22 +232,13 @@
     return distance[first.length - 1][second.length - 1];
   }
 
-  csnlp.minEditDistance = function(first, second, algorithm){
-    if(!first || !second){
-      return -1;
-    }
-    if(algorithm === 'damlev'){
-      return damLevMinEditDistance(first, second);
-    }
-    else if(!algorithm || algorithm === 'lev'){
-      return levMinEditDistance(first, second);
-    }
-  }
-
   //Porter's stemmer algorithm
   //returns a stem from a string
   csnlp.stem = function(word, options){
-    
+    var vowel = "aeiouy",
+        double = ["bb","dd","ff","gg","mm","nn","pp","rr","tt"],
+        validLiEnding = "cdeghkmnrt";
+        //r1 =
   }
 
   csnlp.naiveBayes = function(data, options){
