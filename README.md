@@ -28,8 +28,10 @@ var tokens = csnlp.tokenizeWS(string);
 var tokens = csnlp.tokenizeTB(string);
 ```
 
-* <b>Minimum Edit Distance</b> - Accepts two arrays or strings and measures teh distance betwee the two. Uses Levenshtein's algorithm by default. To override, use 'damlev' for Damerau-Levenshtein algorithm or 'lev' for Levenshtein algorithm. Returns an integer.
+* <b>Minimum Edit Distance</b> - Accepts two arrays or strings and measures the distance between the two. Returns an integer.
+
+  The getEditDistance uses Damerau-Levenshtein Minimum Edit Distance algorithm by counting the number of the four operations: insertion, deletion, substitution and transposition.
 
 ```js
-var distance = csnlp.minEditDistance(a, b, algo);
+var distance = csnlp.getEditDistance(a, b);
 ```

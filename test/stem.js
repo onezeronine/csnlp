@@ -1,2 +1,2 @@
-var assert = require('assert'),
-    csnlp = require('../csnlp');
+var assert = require('assert');
+var csnlp = require('../csnlp');
