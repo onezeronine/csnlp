@@ -9,7 +9,7 @@
   "immed": true,
   "indent": 2,
   "latedef": "nofunc",
-  "newcap": true,
+  "newcap": false,
   "noarg": true,
   "noempty": true,
   "nonbsp": true,
@@ -55,5 +55,5 @@
   "node": true,
 
   "globals": {
-      "angular": false
+    "root": false
   }}

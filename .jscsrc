@@ -1,3 +1,15 @@
 {
-  
-}
+  "preset": "airbnb",
+  "disallowMultipleVarDecl": true,
+  "requireTrailingComma": null,
+  "requirePaddingNewLinesAfterBlocks": null,
+  "validateIndentation": 2,
+  "validateLineBreaks": null,
+  "requireSpaceAfterKeywords": null,
+  "disallowTrailingWhitespace": null,
+  "safeContextKeyword": ["self"],
+  "requireCapitalizedConstructors": {
+    "allExcept": ["csnlp"]
+  },
+  "excludeFiles": ["node_modules/**", "./**/*.conf.js"]
+}

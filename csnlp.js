@@ -1,4 +1,4 @@
-(function () {
+(function() {
   var self = this;
 
   //Creating a safe reference to the csnlp object for use below
@@ -6,20 +6,21 @@
     if (obj instanceof csnlp) {
       return obj;
     }
+
     if (!(this instanceof csnlp)) {
       return new csnlp(obj);
     }
+
     this._wrapped = obj;
   };
 
   //Node.js support for backward compatibility
   if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
+    if(typeof module !== 'undefined' && module.exports) {
       exports = module.exports = csnlp;
     }
     exports.csnlp = csnlp;
-  }
-  else {
+  } else {
     root.csnlp = csnlp;
   }
 
@@ -78,14 +79,12 @@
 
     if(text && text.length > 0) {
       while(current < text.length) {
-        var begin = getBegin(),
-            end = getEnd(begin),
-            word = text.substr(begin, end - begin + 1);
-
+        var begin = getBegin();
+        var end = getEnd(begin);
+        var word = text.substr(begin, end - begin + 1);
         if(word) {
           tokens.push(word);
         }
-
         current = end + 1;
       }
     }
@@ -95,7 +94,7 @@
   //Standard Treebank tokenizer
   //http://www.cis.upenn.edu/~treebank/tokenization.html
   //Ported from NLTK's treebank tokenizer
-  csnlp.tokenizeTB = function (text) {
+  csnlp.tokenizeTB = function(text) {
     var contractions2 = [
         /\b(can)(not)\b/gmi,
         /\b(d)('ye)\b/gmi,
@@ -105,8 +104,8 @@
         /\b(lem)(me)\b/gmi,
         /\b(mor)('n)\b/gmi,
         /\b(wan)(na) /gmi
-      ],
-      contractions3 = [
+      ];
+    var contractions3 = [
         / ('t)(is)\b/,
         / ('t)(was)\b/
       ];
@@ -118,46 +117,56 @@
     //starting quotes
     text = text.replace(/^'/gm, ' `` ');
     text = text.replace(/(``)/gm, ' `` ');
-    text = text.replace(/([ (\[{<])'/gm, function(item) { return item[0]+' `` '; });
+    text = text.replace(/([ (\[{<])'/gm,
+      function(item) { return item[0] + ' `` '; });
 
     //punctuations
-    text = text.replace(/([:,])([^\d])/gm, function(item){ return item[0]+' '+item[1]; });
-    text = text.replace(/\.\.\./gm, function(item){return ' ... ';});
-    text = text.replace(/[;@#$%&]/gm, function(item) { return ' '+item+' '; });
+    text = text.replace(/([:,])([^\d])/gm,
+      function(item) { return item[0] + ' ' + item[1]; });
+    text = text.replace(/\.\.\./gm,
+      function(item) { return ' ... '; });
+    text = text.replace(/[;@#$%&]/gm,
+      function(item) { return ' ' + item + ' '; });
     text = text.replace(/([^\.])(\.)([\]\)}>'\']*)\s*$/gm,
       function(item) { return item[0] + ' ' + item[1] + item[2]; });
-    text = text.replace(/[?!]/gm, function(item) { return ' '+item+' '; });
-    text = text.replace(/([^'])' /gm, function(item) { return item[0]+' '+item[1]; });
+    text = text.replace(/[?!]/gm,
+      function(item) { return ' ' + item + ' '; });
+    text = text.replace(/([^'])' /gm,
+      function(item) { return item[0] + ' ' + item[1]; });
 
     //parens, brackets, etc.
-    text = text.replace(/[\]\[\(\)\{\}><]/gm, function(item) { return ' ' + item + ' '; });
+    text = text.replace(/[\]\[\(\)\{\}><]/gm,
+      function(item) { return ' ' + item + ' '; });
     text = text.replace(/--/gm, ' -- ');
 
     text = ' ' + text + ' ';
 
     //ending quotes
     text = text.replace(/'/gm, ' \'\' ');
-    text = text.replace(/(\S)(\'\')/gm, function(item) { return item[0] + ' \'\''; });
+    text = text.replace(/(\S)(\'\')/gm,
+      function(item) { return item[0] + ' \'\''; });
 
     text = text.replace(/([^' ])('[sS]|'[mM]|'[dD]|') /gm,
-      function(item){ return item[0]+' '+item.substr(1, item.length)+' '; });
+      function(item) { return item[0] + ' ' + item.substr(1, item.length) + ' '; });
     text = text.replace(/([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) /gm,
-      function(item){ return item[0]+' '+item.substr(1,item.length)+' '; });
+      function(item) { return item[0] + ' ' + item.substr(1, item.length) + ' '; });
 
-    contractions2.forEach(function(e, i, arr){
-      text = text.replace(e, function(item){return ' '+item[0]+' '+item.substr(1,item.length)+' ';});
+    contractions2.forEach(function(e, i, arr) {
+      text = text.replace(e,
+        function(item) { return ' ' + item[0] + ' ' + item.substr(1, item.length) + ' '; });
     });
-    contractions3.forEach(function(e, i, arr){
-      text = text.replace(e, function(item){return ' '+item[0]+' '+item[1]+' ';});
+    contractions3.forEach(function(e, i, arr) {
+      text = text.replace(e,
+        function(item) { return ' ' + item[0] + ' ' + item[1] + ' '; });
     });
 
     return this.tokenizeWS(text);
   };
 
-  function initDistance(distance, x, y) {
+  csnlp._initDistance = function(distance, x, y) {
     for(var i = 0; i < x; ++i) {
       distance.push([]);
-      for(var j = 0; j < y; ++j){
+      for(var j = 0; j < y; ++j) {
         distance[i].push(0);
       }
     }
@@ -166,14 +175,14 @@
       distance[k][0] = k;
     }
 
-    for(var l = 0; l < y; ++l){
+    for(var l = 0; l < y; ++l) {
       distance[0][l] = l;
     }
-  }
+  };
 
   //Damerau-Levenshtein Minimum Edit Distance
   //includes transposition in its operations
-  csnlp.getEditDistance = function(first, second){
+  csnlp.getEditDistance = function(first, second) {
     if (first.length === 1 || second.length === 0) {
       return -1;
     }
@@ -181,25 +190,24 @@
     var y = second.length + 1;
     var distance = [];
 
-    initDistance(distance, x, y);
+    this._initDistance(distance, x, y);
 
     var cost = 0;
     for(var i = 1; i < x; ++i) {
       for(var j = 1; j < y; ++j) {
         if(first[i] === second[j]) {
           cost = 0;
-        }
-        else {
+        } else {
           cost = 1;
         }
-        var delCost = distance[i-1][j] + 1;
-        var insCost = distance[i][j-1] + 1;
-        var trpCost = distance[i-1][j-1] + (first[i-1] !== second[j-1] ? 2 : 0);
+        var delCost = distance[i - 1][j] + 1;
+        var insCost = distance[i][j - 1] + 1;
+        var trpCost = distance[i - 1][j - 1] + (first[i - 1] !== second[j - 1] ? 2 : 0);
 
         distance[i][j] = Math.min(delCost, insCost, trpCost);
 
-        if(i > 1 && j > 1 && first[i] === second[j-1] && first[i-1] === second[j]){
-          distance[i][j] = Math.min(distance[i][j], distance[i-2][j-2] + cost);
+        if(i > 1 && j > 1 && first[i] === second[j - 1] && first[i - 1] === second[j]) {
+          distance[i][j] = Math.min(distance[i][j], distance[i - 2][j - 2] + cost);
         }
       }
     }
@@ -212,10 +220,9 @@
     var vowel = 'aeiouy';
     var double = ['bb','dd','ff','gg','mm','nn','pp','rr','tt'];
     var validLiEnding = 'cdeghkmnrt';
-        //r1 =
   };
 
-  csnlp.naiveBayes = function(data, options){
+  csnlp.naiveBayes = function(data, options) {
 
   };
 
