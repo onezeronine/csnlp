@@ -55,5 +55,7 @@
   "node": true,
 
   "globals": {
-    "root": false
+    "root": false,
+    "describe": false,
+    "it": false
   }}

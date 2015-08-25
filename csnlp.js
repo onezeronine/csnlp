@@ -167,16 +167,14 @@
     for(var i = 0; i < x; ++i) {
       distance.push([]);
       for(var j = 0; j < y; ++j) {
-        distance[i].push(0);
+        if(j === 0) {
+          distance[i].push(i);
+        } else if(i === 0) {
+          distance[i].push(j);
+        } else {
+          distance[i].push(0);
+        }
       }
-    }
-
-    for(var k = 0; k < x; ++k) {
-      distance[k][0] = k;
-    }
-
-    for(var l = 0; l < y; ++l) {
-      distance[0][l] = l;
     }
   };
 
