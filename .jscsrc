@@ -1,15 +1,54 @@
 {
-  "preset": "airbnb",
+  "preset": "google",
+
+  "disallowArrowFunctions": true,
+  "disallowDanglingUnderscores": false,
+  "disallowEmptyBlocks": true,
+  "disallowMultipleLineStrings": null,
   "disallowMultipleVarDecl": true,
-  "requireTrailingComma": null,
-  "requirePaddingNewLinesAfterBlocks": null,
-  "validateIndentation": 2,
-  "validateLineBreaks": null,
-  "requireSpaceAfterKeywords": null,
   "disallowTrailingWhitespace": null,
-  "safeContextKeyword": ["self"],
-  "requireCapitalizedConstructors": {
-    "allExcept": ["csnlp"]
+  "disallowQuotedKeysInObjects": true,
+  "disallowSpacesInsideObjectBrackets": false,
+
+  "excludeFiles": ["node_modules/**", "./**/*.conf.js"],
+
+  "maximumLineLength": {
+    "value": 120,
+    "allExcept": ["comments", "regex"]
   },
-  "excludeFiles": ["node_modules/**", "./**/*.conf.js"]
-}
+  "requireCurlyBraces": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "try",
+    "catch"
+  ],
+  "requireSpaceAfterKeywords": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "switch",
+    "return",
+    "try",
+    "catch"
+  ],
+
+  "requireCapitalizedConstructors": false,
+  "requireDotNotation": true,
+  "requireSemicolons": true,
+  "requireCamelCaseOrUpperCaseIdentifiers": true,
+  "requireOperatorBeforeLineBreak": true,
+  "requirePaddingNewLinesAfterBlocks": null,
+  "requireSpaceAfterKeywords": null,
+  "requireTrailingComma": null,
+
+  "safeContextKeyword": ["self"],
+
+  "validateIndentation": 2,
+  "validateQuoteMarks": "'",
+  "validateLineBreaks": null
+}
