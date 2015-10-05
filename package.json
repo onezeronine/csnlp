@@ -10,6 +10,7 @@
   },
   "main": "csnlp.js",
   "devDependencies": {
+    "chai": "^3.3.0",
     "gulp": "^3.9.0",
     "gulp-jscs": "^3.0.1",
     "gulp-jshint": "^1.11.2",

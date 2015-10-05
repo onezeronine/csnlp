@@ -1,6 +1,8 @@
 //Standard Treebank tokenizer
 //http://www.cis.upenn.edu/~treebank/tokenization.html
 //Ported from NLTK's treebank tokenizer
+var _ = require('lodash');
+
 module.exports = function(text) {
   var contractions2 = [
       /\b(can)(not)\b/gmi,
@@ -35,7 +37,7 @@ module.exports = function(text) {
   text = text.replace(/[;@#$%&]/gm,
     function(item) { return ' ' + item + ' '; });
   text = text.replace(/([^\.])(\.)([\]\)}>'\']*)\s*$/gm,
-    function(item) { return item[0] + ' ' + item[1] + item[2]; });
+    function(item) { return item[0] + ' ' + item[1] + (item[2] ? item[2] : ''); });
   text = text.replace(/[?!]/gm,
     function(item) { return ' ' + item + ' '; });
   text = text.replace(/([^'])' /gm,
@@ -67,5 +69,5 @@ module.exports = function(text) {
       function(item) { return ' ' + item[0] + ' ' + item[1] + ' '; });
   });
 
-  return text.split(' ');
+  return text.match(/\S+/g);
 };
