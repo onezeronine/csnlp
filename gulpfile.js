@@ -5,7 +5,10 @@ var jshint = require('gulp-jshint');
 
 gulp.task('analysis', function() {
   return gulp
-    .src('./csnlp.js')
+    .src([
+      './modules/**/*.js',
+      './csnlp.js'
+    ])
     .pipe(jshint())
     .pipe(jscs())
     .pipe(jscs.reporter())
