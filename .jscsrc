@@ -2,7 +2,7 @@
   "preset": "google",
 
   "disallowArrowFunctions": true,
-  "disallowDanglingUnderscores": false,
+  "disallowDanglingUnderscores": true,
   "disallowEmptyBlocks": true,
   "disallowMultipleLineStrings": null,
   "disallowMultipleVarDecl": true,
@@ -37,7 +37,7 @@
     "catch"
   ],
 
-  "requireCapitalizedConstructors": false,
+  "requireCapitalizedConstructors": true,
   "requireDotNotation": true,
   "requireSemicolons": true,
   "requireCamelCaseOrUpperCaseIdentifiers": true,

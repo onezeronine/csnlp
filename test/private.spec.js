@@ -2,6 +2,8 @@ var assert = require('assert');
 var csnlp = require('../csnlp');
 
 describe('csnlp - private methods', function() {
+
+  /**
   describe('#_endsWith()', function() {
     it('ends with ion', function() {
       var result = csnlp._endsWith('transposition', 'ion');
@@ -66,4 +68,6 @@ describe('csnlp - private methods', function() {
       }
     });
   });
+
+  **/
 });
