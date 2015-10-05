@@ -16,16 +16,10 @@ var csnlp = require('csnlp')
 
 ### API Docs
 
-* <b>Whitespace Tokenizer</b> - Takes a string and tokenizes it by whitespace. Returns an array of strings.
-
-```js
-var tokens = csnlp.tokenizeWS(string);
-```
-
 * <b>Treebank Tokenizer</b> - Takes a string and tokenizes it using the set of rules found [here](https://www.cis.upenn.edu/~treebank/tokenization.html). Returns an array of strings.
 
 ```js
-var tokens = csnlp.tokenizeTB(string);
+var tokens = csnlp.treebank(string);
 ```
 
 * <b>Minimum Edit Distance</b> - Accepts two arrays or strings and measures the distance between the two. Returns an integer.
@@ -33,5 +27,5 @@ var tokens = csnlp.tokenizeTB(string);
   The getEditDistance uses Damerau-Levenshtein Minimum Edit Distance algorithm by counting the number of the four operations: insertion, deletion, substitution and transposition.
 
 ```js
-var distance = csnlp.getEditDistance(a, b);
+var distance = csnlp.minEditDistance('this', 'that');
 ```
