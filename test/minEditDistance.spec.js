@@ -1,38 +1,44 @@
-var assert = require('assert');
+var expect = require('chai').expect;
 var csnlp = require('../csnlp');
 
 describe('csnlp', function() {
   describe('#minEditDistance()', function() {
-    it('empty strings = -1', function() {
+    it('empty strings', function() {
       var distance = csnlp.minEditDistance('', '');
-      assert.equal(-1, distance);
+      var expected = -1;
+      expect(distance).to.be.equal(expected);
     });
 
-    it('kitten | sitting = 5', function() {
+    it('kitten | sitting', function() {
       var distance = csnlp.minEditDistance('kitten', 'sitting');
-      assert.equal(5, distance);
+      var expected = 5;
+      expect(distance).to.be.equal(expected);
     });
 
     it('the | that', function() {
       var distance = csnlp.minEditDistance('that', 'the');
-      assert.equal(1, distance);
+      var expected = 1;
+      expect(distance).to.be.equal(expected);
     });
 
-    it('this | tihs using Damerau-Levenshtein', function() {
+    it('this | tihs', function() {
       var distance = csnlp.minEditDistance('this', 'tihs');
-      assert.equal(2, distance);
+      var expected = 2;
+      expect(distance).to.be.equal(expected);
     });
 
     it('intention | execution', function() {
       var distance = csnlp.minEditDistance('intention', 'execution');
-      assert.equal(8, distance);
+      var expected = 8;
+      expect(distance).to.be.equal(expected);
     });
 
     it('two arrays', function() {
       var ar1 = ['spokesman', 'confirms', 'senior', 'government', 'adviser', 'was', 'shot'];
       var ar2 = ['spokesman', 'said', 'the', 'senior', 'adviser', 'was', 'shot', 'dead'];
       var distance = csnlp.minEditDistance(ar1, ar2);
-      assert.equal(5, distance);
+      var expected = 5;
+      expect(distance).to.be.equal(expected);
     });
   });
 });

@@ -1,4 +1,3 @@
-var assert = require('assert');
 var csnlp = require('../csnlp');
 
 describe('csnlp - private methods', function() {
