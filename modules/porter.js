@@ -5,6 +5,23 @@ var VOWELS = 'aeiouy';
 var DOUBLES = ['bb','dd','ff','gg','mm','nn','pp','rr','tt'];
 var LI_ENDINGS = 'cdeghkmnrt';
 
+var regionOne = 0;
+var regionTwo = 0;
+
+/* jshint -W121 */
+//Polyfill String.prototype.endsWith if not using ECMAScript 6 (2015)
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+    var subjectString = this.toString();
+    if (position === undefined || position > subjectString.length) {
+      position = subjectString.length;
+    }
+    position -= searchString.length;
+    var lastIndex = subjectString.indexOf(searchString, position);
+    return lastIndex !== -1 && lastIndex === position;
+  };
+}
+
 function isVowel(c) {
   return VOWELS.indexOf(c) >= 0;
 }
@@ -56,6 +73,49 @@ function isShort(word) {
   return (cnda || cndb) && r1(word) === word.length;
 }
 
+//Search for the longest among the suffixes
+// ' 's 's'
+//and removed if found
+function step0(word) {
+  return word.replace(/\'s\'|\'s|\'$/, '');
+}
+
+function step1a(word) {
+  return word.replace(/sses$/, 'ss')
+    .replace(/(.*?)(ied$|ies$)/,
+      function(w) {
+        if(w[0].length > 1) { return w[0] + 'i'; }
+        return w[0] + 'ie';
+      })
+    .replace(/(\w*[aeiouy]\w+[aeiou])(s)|(\w*[aeiouy]\w+)(s)/, function(w) { return w.replace(/s$/, ''); })
+    .replace(/us|ss/, function(w) { return w; }); //do nothing
+}
+
+function doSteps(word) {
+  //Remove initial ', if present
+  word = word.replace(/^\'/, '');
+
+  //Set initial y, or y after a vowel, to Y
+  word = word
+    .replace(/^y/, 'Y')
+    .replace(/[aeiouy]y/, function(item) { return item[0] + 'Y'; });
+
+  //Establish regions
+  regionOne = r1(word);
+  regionTwo = r2(word);
+
+  return step1a(step0(word));
+}
+
 module.exports.stem = function(word) {
-  //...
+  if(!word) { return null; }
+  if(typeof word === 'string' || word instanceof String) {
+    //If the word has two letters or less, leave it as it is.
+    if(word.length <= 2) {
+      return word;
+    }
+    return doSteps(word);
+  } else {
+    return null;
+  }
 };

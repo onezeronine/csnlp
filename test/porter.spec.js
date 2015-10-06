@@ -4,11 +4,16 @@ var csnlp = require('../csnlp');
 describe('csnlp', function() {
   describe('#stem', function() {
     it('empty word', function() {
-      var word = ['beautiful', 'animadversion', 'sprinkled', 'eucharist', 'beauty', 'beau'];
-      var word2 = ['trap', 'ow', 'uproot', 'disturb', 'bestow', 'entrap', 'bead', 'shred', 'bed', 'shed', 'beds'];
+      var word = [
+        // 'beautiful', 'animadversion', 'sprinkled', 'eucharist', 'beauty', 'beau',
+        // 'trap', 'ow', 'uproot', 'disturb', 'bestow', 'entrap', 'bead', 'shred', 'bed', 'shed', 'beds',
+        // '\'ye', 'aye', 'prototype', 'bye', 'say', 'okay', 'yoyo',
+        'gas', 'this', 'kiwis', 'gaps'
+        ];
 
-      word2.forEach(function(i) {
-        csnlp.stem(i);
+      word.forEach(function(i) {
+        var res = csnlp.stem(i);
+        // console.log(i + ' => ' + res);
       });
 
     });
