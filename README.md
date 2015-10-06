@@ -1,6 +1,8 @@
 ## CSNLP - the clumsy NLP JS library!
 
-CSNLP is a javascript library that provides common NLP features such as tokenization, stemming, computing distance and many others.
+CSNLP is a javascript library that provides common NLP features such as tokenization, stemming, computing distance among many others.
+
+[![Build Status](https://travis-ci.org/onezeronine/csnlp.svg)](https://travis-ci.org/onezeronine/csnlp)
 
 ### Usage
 
