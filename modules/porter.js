@@ -83,6 +83,15 @@ function endsWithDouble(word) {
   return false;
 }
 
+function takeLongestSuffix(conditions, word) {
+  for(var i = 0; i < conditions.length; ++i) {
+    if(conditions[i].pattern.test(word)) {
+      return word.replace(conditions[i].pattern, conditions[i].action);
+    }
+  }
+  return word;
+}
+
 //Search for the longest among the suffixes
 // ' 's 's'
 //and removed if found
@@ -98,7 +107,7 @@ function step0(word) {
 //             the s (so gas and this retain the s, gaps and kiwis lose it)
 //us+   ss  => do nothing
 function step1a(word) {
-  var cnd = [
+  var conditions = [
     { pattern: /sses$/, action: 'ss' },
     { pattern: /(.*?)(ied$|ies$)/,
       action: function(w) {
@@ -111,12 +120,7 @@ function step1a(word) {
       }},
     { pattern: /us|ss/, action: function(w) { return w; } }
   ];
-  for(var i = 0; i < cnd.length; ++i) {
-    if(cnd[i].pattern.test(word)) {
-      return word.replace(cnd[i].pattern, cnd[i].action);
-    }
-  }
-  return word;
+  return takeLongestSuffix(conditions, word);
 }
 
 //Search for the longest among the following suffixes, and perform the action indicated.
@@ -152,10 +156,41 @@ function step1b(word) {
   return word;
 }
 
+//replace suffix y or Y by i if preceded by a non-vowel which is not the first
+// letter of the word (so cry -> cri, by -> by, say -> say)
 function step1c(word) {
   return word.replace(/.+[bcdfghjklmnpqrstvz][yY]$/, function(w) {
     return w.substr(0, w.length - 1) + 'i';
   });
+}
+
+function step2(word) {
+  var conditions = [
+    { pattern: /tional$/, action: 'tion' },
+    { pattern: /enci$/, action: 'ence' },
+    { pattern: /anci$/, action: 'ance' },
+    { pattern: /abli$/, action: 'able' },
+    { pattern: /entli$/, action: 'ent' },
+    { pattern: /izer$|ization$/, action: 'ize' },
+    { pattern: /ational$|ation$|ator$/, action: 'ate' },
+    { pattern: /alism$|aliti$|alli$/, action: 'al' },
+    { pattern: /fulness$/, action: 'ful' },
+    { pattern: /ousli$|ousness$/, action: 'ous' },
+    { pattern: /iveness$|iviti$/, action: 'ive' },
+    { pattern: /biliti$|bli$/, action: 'ble' },
+    { pattern: /logi$/, action: 'log' },
+    { pattern: /fulli$/, action: 'ful' },
+    { pattern: /lessli$/, action: 'less' },
+    { pattern: /(.)(li)$/,
+      action: function(w) {
+        if(w[0].indexOf(LI_ENDINGS) >= 0) {
+          return w[0];
+        }
+        return w[0] + w[1];
+      }
+    },
+  ];
+  return takeLongestSuffix(conditions, word);
 }
 
 function doSteps(word) {
@@ -171,7 +206,9 @@ function doSteps(word) {
   regionOne = r1(word);
   regionTwo = r2(word);
 
-  return step1c(step1b(step1a(step0(word))));
+  return step2(
+    step1c(step1b(step1a(step0(word))))
+  );
 }
 
 module.exports.stem = function(word) {
