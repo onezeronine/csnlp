@@ -73,6 +73,16 @@ function isShort(word) {
   return (cnda || cndb) && r1(word) === word.length;
 }
 
+//Returns true if the last two letters of the word, ends with equal character
+//otherwise false
+function endsWithDouble(word) {
+  var len = word.length;
+  if(len >= 2) {
+    return word[len - 1] === word[len - 2];
+  }
+  return false;
+}
+
 //Search for the longest among the suffixes
 // ' 's 's'
 //and removed if found
@@ -80,15 +90,72 @@ function step0(word) {
   return word.replace(/\'s\'|\'s|\'$/, '');
 }
 
+//Search for the longest among the following suffixes, and perform the action indicated.
+//sses      => replace by ss
+//ied+ ies* => replace by i if preceded by more than one letter,
+//             otherwise by ie (so ties -> tie, cries -> cri)
+//s         => delete if the preceding word part contains a vowel not immediately before
+//             the s (so gas and this retain the s, gaps and kiwis lose it)
+//us+   ss  => do nothing
 function step1a(word) {
-  return word.replace(/sses$/, 'ss')
-    .replace(/(.*?)(ied$|ies$)/,
-      function(w) {
+  var cnd = [
+    { pattern: /sses$/, action: 'ss' },
+    { pattern: /(.*?)(ied$|ies$)/,
+      action: function(w) {
         if(w[0].length > 1) { return w[0] + 'i'; }
         return w[0] + 'ie';
-      })
-    .replace(/(\w*[aeiouy]\w+[aeiou])(s)|(\w*[aeiouy]\w+)(s)/, function(w) { return w.replace(/s$/, ''); })
-    .replace(/us|ss/, function(w) { return w; }); //do nothing
+      }},
+    { pattern: /(\w*[aeiouy]\w+[aeiou])(s)|(\w*[aeiouy]\w+)(s)/,
+      action: function(w) {
+        return w.replace(/s$/, '');
+      }},
+    { pattern: /us|ss/, action: function(w) { return w; } }
+  ];
+  for(var i = 0; i < cnd.length; ++i) {
+    if(cnd[i].pattern.test(word)) {
+      return word.replace(cnd[i].pattern, cnd[i].action);
+    }
+  }
+  return word;
+}
+
+//Search for the longest among the following suffixes, and perform the action indicated.
+//eed eedly+          => replace by ee if in R1
+//ed edly+ ing ingly+ => delete if the preceding word part contains a vowel, and after the deletion:
+//                      if the word ends at, bl or iz add e (so luxuriat -> luxuriate), or
+//                      if the word ends with a double remove the last letter (so hopp -> hop), or
+//                      if the word is short, add e (so hop -> hope)
+function step1b(word) {
+  var c1 = /eed$|eedly$/;
+  var c2 = /ed$|edly$|ing$|ingly$/;
+  if(c1.test(word)) {
+    var region = word.substr(regionOne, word.length - regionOne);
+    if(c1.test(region)) {
+      return word.replace(c1, 'ee');
+    }
+  }
+  if(c2.test(word)) {
+    var after = word.replace(c2, '');
+    if(/[aeiouy]/.test(after)) {
+      word = after;
+      if(/at$|bl$|iz$/.test(word)) {
+        return word + 'e';
+      }
+      if(endsWithDouble(word)) {
+        return word.substr(0, word.length - 1);
+      }
+      if(isShort(word)) {
+        return word + 'e';
+      }
+    }
+  }
+  return word;
+}
+
+function step1c(word) {
+  return word.replace(/.+[bcdfghjklmnpqrstvz][yY]$/, function(w) {
+    return w.substr(0, w.length - 1) + 'i';
+  });
 }
 
 function doSteps(word) {
@@ -104,7 +171,7 @@ function doSteps(word) {
   regionOne = r1(word);
   regionTwo = r2(word);
 
-  return step1a(step0(word));
+  return step1c(step1b(step1a(step0(word))));
 }
 
 module.exports.stem = function(word) {
