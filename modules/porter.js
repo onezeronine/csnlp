@@ -92,6 +92,18 @@ function takeLongestSuffix(conditions, word) {
   return word;
 }
 
+function takeLongestSuffixAndR1(conditions, word) {
+  for(var i = 0; i < conditions.length; ++i) {
+    if(conditions[i].pattern.test(word)) {
+      var region = word.substr(regionOne, word.length - regionOne);
+      if(conditions[i].pattern.test(region)) {
+        return word.replace(conditions[i].pattern, conditions[i].action);
+      }
+    }
+  }
+  return word;
+}
+
 //Search for the longest among the suffixes
 // ' 's 's'
 //and removed if found
@@ -190,7 +202,7 @@ function step2(word) {
       }
     },
   ];
-  return takeLongestSuffix(conditions, word);
+  return takeLongestSuffixAndR1(conditions, word);
 }
 
 function doSteps(word) {
