@@ -9,7 +9,8 @@ describe('csnlp', function() {
         'trap', 'ow', 'uproot', 'disturb', 'bestow', 'entrap', 'bead', 'shred', 'bed', 'shed', 'beds',
         '\'ye', 'aye', 'prototype', 'bye', 'say', 'okay', 'yoyo',
         'gas', 'this', 'kiwis', 'gaps', 'assess', 'repeateedly', 'hopping', 'hopped', 'crying', 'by', 'say',
-        'generally', 'generated'
+        'generally', 'generated', 'derivative', 'dative', 'boastfulness', 'trustworthiness',
+        'consign', 'consigned', 'consigning', 'consignment', 'consist', 'consisted', 'consistency'
         ];
 
       word.forEach(function(i) {

@@ -104,6 +104,18 @@ function takeLongestSuffixAndR1(conditions, word) {
   return word;
 }
 
+function takeLongestSuffixAndR2(conditions, word) {
+  for(var i = 0; i < conditions.length; ++i) {
+    if(conditions[i].pattern.test(word)) {
+      var region = word.substr(regionTwo, word.length - regionTwo);
+      if(conditions[i].pattern.test(region)) {
+        return word.replace(conditions[i].pattern, conditions[i].action);
+      }
+    }
+  }
+  return word;
+}
+
 //Search for the longest among the suffixes
 // ' 's 's'
 //and removed if found
@@ -126,11 +138,11 @@ function step1a(word) {
         if(w[0].length > 1) { return w[0] + 'i'; }
         return w[0] + 'ie';
       }},
+    { pattern: /us|ss/, action: function(w) { return w; } },
     { pattern: /(\w*[aeiouy]\w+[aeiou])(s)|(\w*[aeiouy]\w+)(s)/,
       action: function(w) {
         return w.replace(/s$/, '');
-      }},
-    { pattern: /us|ss/, action: function(w) { return w; } }
+      }}
   ];
   return takeLongestSuffix(conditions, word);
 }
@@ -205,6 +217,90 @@ function step2(word) {
   return takeLongestSuffixAndR1(conditions, word);
 }
 
+//Search for the longest among the following suffixes, and, if found and in R1, perform the action indicated.
+//tional+           => replace by tion
+//ational+          => replace by ate
+//alize             => replace by al
+//icate iciti ical  => replace by ic
+//ful ness:         => delete
+//ative*:           => delete if in R2
+function step3(word) {
+  var conditions = [
+    { pattern: /ational$/, action: 'ate' },
+    { pattern: /tional$/, action: 'tion' },
+    { pattern: /alize$/, action: 'al' },
+    { pattern: /icate$|iciti$|ical$/, ation: 'ic' },
+    { pattern: /ful$|ness$/, action: '' },
+    { pattern: /ative$/, action: function(item) {
+      var region = word.substr(regionTwo, word.length - regionTwo);
+      if(/ative$/.test(region)) {
+        return '';
+      }
+      return item;
+    }},
+  ];
+  return takeLongestSuffixAndR1(conditions, word);
+}
+
+//Search for the longest among the following suffixes, and, if found and in R2, perform the action indicated.
+//al ance ence er ic able ible ant
+//ement ment ent ism ate iti ous ive ize  => delete
+//ion                                     => delete if preceded by s or t
+function step4(word) {
+  var conditions = [
+    { pattern: /al$/, action: '' },
+    { pattern: /ance$/, action: '' },
+    { pattern: /ence$/, action: '' },
+    { pattern: /er$/, action: '' },
+    { pattern: /ic$/, action: '' },
+    { pattern: /able$/, action: '' },
+    { pattern: /ible$/, action: '' },
+    { pattern: /ant$/, action: '' },
+    { pattern: /ement$/, action: '' },
+    { pattern: /ment$/, action: '' },
+    { pattern: /ent$/, action: '' },
+    { pattern: /ism$/, action: '' },
+    { pattern: /ate$/, action: '' },
+    { pattern: /iti$/, action: '' },
+    { pattern: /ous$/, action: '' },
+    { pattern: /ive$/, action: '' },
+    { pattern: /ize$/, action: '' },
+    { pattern: /[ts]ion$/,
+      action: function(item) {
+        return item[0];
+      }
+    },
+  ];
+  return takeLongestSuffixAndR2(conditions, word);
+}
+
+//Search for the the following suffixes, and, if found, perform the action indicated.
+//e => delete if in R2, or in R1 and not preceded by a short syllable
+//l => delete if in R2 and preceded by l
+function step5(word) {
+  var r1 = word.substr(regionOne, word.length - regionOne);
+  var r2 = word.substr(regionTwo, word.length - regionTwo);
+  if(word.length > 1) {
+    var end = word[0];
+    if(end === 'e') {
+      if(/e$/.test(r1) && /e$/.test(r2)) {
+        if(isShort(word)) {
+          return word.replace(/e$/, '');
+        }
+      }
+    } else if(end === 'l') {
+      if(/ll$/.test(r2)) {
+        return word.replace(/l$/, '');
+      }
+    }
+  }
+  return word;
+}
+
+function afterProcess(word) {
+  return word.replace(/Y/g, 'y');
+}
+
 function doSteps(word) {
   //Remove initial ', if present
   word = word.replace(/^\'/, '');
@@ -218,9 +314,11 @@ function doSteps(word) {
   regionOne = r1(word);
   regionTwo = r2(word);
 
-  return step2(
+  var result = step5(step4(step3(step2(
     step1c(step1b(step1a(step0(word))))
-  );
+  ))));
+
+  return afterProcess(result);
 }
 
 module.exports.stem = function(word) {
