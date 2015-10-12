@@ -17,7 +17,6 @@ describe('csnlp', function() {
         var res = csnlp.stem(i);
         console.log(i + ' => ' + res);
       });
-
     });
   });
 });

@@ -7,6 +7,7 @@ var LI_ENDINGS = 'cdeghkmnrt';
 
 var regionOne = 0;
 var regionTwo = 0;
+var debug = false;
 
 /* jshint -W121 */
 //Polyfill String.prototype.endsWith if not using ECMAScript 6 (2015)
@@ -139,7 +140,7 @@ function step1a(word) {
         return w[0] + 'ie';
       }},
     { pattern: /us|ss/, action: function(w) { return w; } },
-    { pattern: /(\w*[aeiouy]\w+[aeiou])(s)|(\w*[aeiouy]\w+)(s)/,
+    { pattern: /(\w*[aeiouy]\w+[aeiou])(s)$|(\w*[aeiouy]\w+)(s)$/,
       action: function(w) {
         return w.replace(/s$/, '');
       }}
@@ -190,12 +191,10 @@ function step1c(word) {
 
 function step2(word) {
   var conditions = [
+    { pattern: /ization$/, action: 'ize' },
     { pattern: /tional$/, action: 'tion' },
-    { pattern: /enci$/, action: 'ence' },
-    { pattern: /anci$/, action: 'ance' },
-    { pattern: /abli$/, action: 'able' },
+    { pattern: /lessli$/, action: 'less' },
     { pattern: /entli$/, action: 'ent' },
-    { pattern: /izer$|ization$/, action: 'ize' },
     { pattern: /ational$|ation$|ator$/, action: 'ate' },
     { pattern: /alism$|aliti$|alli$/, action: 'al' },
     { pattern: /fulness$/, action: 'ful' },
@@ -204,7 +203,10 @@ function step2(word) {
     { pattern: /biliti$|bli$/, action: 'ble' },
     { pattern: /logi$/, action: 'log' },
     { pattern: /fulli$/, action: 'ful' },
-    { pattern: /lessli$/, action: 'less' },
+    { pattern: /enci$/, action: 'ence' },
+    { pattern: /anci$/, action: 'ance' },
+    { pattern: /abli$/, action: 'able' },
+    { pattern: /izer$/, action: 'ize' },
     { pattern: /(.)(li)$/,
       action: function(w) {
         if(w[0].indexOf(LI_ENDINGS) >= 0) {
@@ -248,16 +250,13 @@ function step3(word) {
 //ion                                     => delete if preceded by s or t
 function step4(word) {
   var conditions = [
-    { pattern: /al$/, action: '' },
+    { pattern: /ement$/, action: '' },
+    { pattern: /ment$/, action: '' },
     { pattern: /ance$/, action: '' },
     { pattern: /ence$/, action: '' },
-    { pattern: /er$/, action: '' },
-    { pattern: /ic$/, action: '' },
     { pattern: /able$/, action: '' },
     { pattern: /ible$/, action: '' },
     { pattern: /ant$/, action: '' },
-    { pattern: /ement$/, action: '' },
-    { pattern: /ment$/, action: '' },
     { pattern: /ent$/, action: '' },
     { pattern: /ism$/, action: '' },
     { pattern: /ate$/, action: '' },
@@ -265,6 +264,9 @@ function step4(word) {
     { pattern: /ous$/, action: '' },
     { pattern: /ive$/, action: '' },
     { pattern: /ize$/, action: '' },
+    { pattern: /al$/, action: '' },
+    { pattern: /er$/, action: '' },
+    { pattern: /ic$/, action: '' },
     { pattern: /[ts]ion$/,
       action: function(item) {
         return item[0];
@@ -321,7 +323,9 @@ function doSteps(word) {
   return afterProcess(result);
 }
 
-module.exports.stem = function(word) {
+module.exports.stem = function(word, options) {
+  options = options || {};
+  debug = options.debug || false;
   if(!word) { return null; }
   if(typeof word === 'string' || word instanceof String) {
     //If the word has two letters or less, leave it as it is.
