@@ -136,8 +136,8 @@ function step1a(word) {
     { pattern: /sses$/, action: 'ss' },
     { pattern: /(.*?)(ied$|ies$)/,
       action: function(w) {
-        if(w[0].length > 1) { return w[0] + 'i'; }
-        return w[0] + 'ie';
+        if(w.length > 4) { return w.replace(/ied$|ies$/, '') + 'i'; }
+        return w.replace(/ied$|ies$/, '') + 'ie';
       }},
     { pattern: /us|ss/, action: function(w) { return w; } },
     { pattern: /(\w*[aeiouy]\w+[aeiou])(s)$|(\w*[aeiouy]\w+)(s)$/,
@@ -189,6 +189,23 @@ function step1c(word) {
   });
 }
 
+// Search for the longest among the following suffixes, and, if found and in R1, perform the action indicated.
+// tional:   replace by tion
+// enci:   replace by ence
+// anci:   replace by ance
+// abli:   replace by able
+// entli:   replace by ent
+// izer   ization:   replace by ize
+// ational   ation   ator:   replace by ate
+// alism   aliti   alli:   replace by al
+// fulness:   replace by ful
+// ousli   ousness:   replace by ous
+// iveness   iviti:   replace by ive
+// biliti   bli+:   replace by ble
+// ogi+:   replace by og if preceded by l
+// fulli+:   replace by ful
+// lessli+:   replace by less
+// li+:   delete if preceded by a valid li-ending
 function step2(word) {
   var conditions = [
     { pattern: /ization$/, action: 'ize' },
@@ -283,14 +300,13 @@ function step5(word) {
   var r1 = word.substr(regionOne, word.length - regionOne);
   var r2 = word.substr(regionTwo, word.length - regionTwo);
   if(word.length > 1) {
-    var end = word[0];
-    if(end === 'e') {
-      if(/e$/.test(r1) && /e$/.test(r2)) {
-        if(isShort(word)) {
+    if(word.endsWith('e')) {
+      if(/e$/.test(r1) || /e$/.test(r2)) {
+        if(!isShort(word)) {
           return word.replace(/e$/, '');
         }
       }
-    } else if(end === 'l') {
+    } else if(word.endsWith('l')) {
       if(/ll$/.test(r2)) {
         return word.replace(/l$/, '');
       }
@@ -316,16 +332,15 @@ function doSteps(word) {
   regionOne = r1(word);
   regionTwo = r2(word);
 
-  var result = step5(step4(step3(step2(
-    step1c(step1b(step1a(step0(word))))
-  ))));
+  var result =
+    step5(step4(step3(step2(
+      step1c(step1b(step1a(step0(word))))
+    ))));
 
   return afterProcess(result);
 }
 
-module.exports.stem = function(word, options) {
-  options = options || {};
-  debug = options.debug || false;
+module.exports.stem = function(word) {
   if(!word) { return null; }
   if(typeof word === 'string' || word instanceof String) {
     //If the word has two letters or less, leave it as it is.
